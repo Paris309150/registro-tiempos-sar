@@ -1,0 +1,240 @@
+html:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro SAR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #0056b3;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        form label {
+            margin: auto 0;
+        }
+        form select, form input, form button {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        form button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        form button:hover {
+            background-color: #004494;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #clearButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #clearButton:hover {
+            background-color: #c9302c;
+        }
+        .highlight {
+            animation: highlightAnim 1.5s ease-in-out;
+        }
+        @keyframes highlightAnim {
+            0% { background-color: #d4edda; }
+            50% { background-color: #c3e6cb; }
+            100% { background-color: transparent; }
+        }
+        .delete-button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: background-color 0.3s ease;
+        }
+        .delete-button:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registro de Tiempos en SAR</h1>
+
+    <form id="entryForm">
+        <label for="category">Categoría:</label>
+        <select id="category" required>
+            <option value="">Seleccione</option>
+            <option value="C1">C1</option>
+            <option value="C2">C2</option>
+            <option value="C3">C3</option>
+            <option value="C4">C4</option>
+            <option value="C5">C5</option>
+        </select>
+
+        <label for="age">Edad:</label>
+        <select id="age" required>
+            <option value="">Seleccione</option>
+            <option value=">15">Mayor a 15</option>
+            <option value="<=15">Menor o igual a 15</option>
+        </select>
+
+        <label for="time">Tiempo (min):</label>
+        <input type="number" id="time" min="1" required>
+
+        <button type="submit">Agregar</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Categoría</th>
+                <th>Edad</th>
+                <th>Tiempo (min)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="dataTable">
+            <!-- Data rows go here -->
+        </tbody>
+    </table>
+
+    <h2>Resumen</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Categoría</th>
+                <th>Total Pacientes (>15)</th>
+                <th>Tiempo Promedio (>15)</th>
+                <th>Total Pacientes (<=15)</th>
+                <th>Tiempo Promedio (<=15)</th>
+            </tr>
+        </thead>
+        <tbody id="summaryTable">
+            <!-- Summary rows go here -->
+        </tbody>
+    </table>
+
+    <button id="clearButton">Limpiar Todo</button>
+
+    <script>
+        const entryForm = document.getElementById('entryForm');
+        const dataTable = document.getElementById('dataTable');
+        const summaryTable = document.getElementById('summaryTable');
+        const clearButton = document.getElementById('clearButton');
+        let dataEntries = [];
+
+        entryForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const category = document.getElementById('category').value;
+            const age = document.getElementById('age').value;
+            const time = parseInt(document.getElementById('time').value);
+
+            dataEntries.push({ category, age, time });
+            renderTable();
+            renderSummary();
+
+            entryForm.reset();
+        });
+
+        clearButton.addEventListener('click', function() {
+            dataEntries = [];
+            renderTable();
+            renderSummary();
+        });
+
+        function renderTable() {
+            dataTable.innerHTML = '';
+            dataEntries.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = 
+                    <td>${entry.category}</td>
+                    <td>${entry.age}</td>
+                    <td>${entry.time}</td>
+                    <td><button class="delete-button" onclick="deleteEntry(${index})">Eliminar</button></td>
+                ;
+                dataTable.appendChild(row);
+            });
+        }
+
+        function renderSummary() {
+            const categories = ['C1', 'C2', 'C3', 'C4', 'C5'];
+            summaryTable.innerHTML = '';
+
+            categories.forEach(category => {
+                const greater15 = dataEntries.filter(entry => entry.category === category && entry.age === '>15');
+                const lessOrEqual15 = dataEntries.filter(entry => entry.category === category && entry.age === '<=15');
+
+                const totalGreater15 = greater15.length;
+                const avgGreater15 = totalGreater15 ? (greater15.reduce((sum, entry) => sum + entry.time, 0) / totalGreater15).toFixed(2) : 'N/A';
+
+                const totalLessOrEqual15 = lessOrEqual15.length;
+                const avgLessOrEqual15 = totalLessOrEqual15 ? (lessOrEqual15.reduce((sum, entry) => sum + entry.time, 0) / totalLessOrEqual15).toFixed(2) : 'N/A';
+
+                const row = document.createElement('tr');
+                row.innerHTML = 
+                    <td>${category}</td>
+                    <td>${totalGreater15}</td>
+                    <td>${avgGreater15}</td>
+                    <td>${totalLessOrEqual15}</td>
+                    <td>${avgLessOrEqual15}</td>
+                ;
+                summaryTable.appendChild(row);
+            });
+        }
+
+        function deleteEntry(index) {
+            dataEntries.splice(index, 1);
+            renderTable();
+            renderSummary();
+        }
+    </script>
+</body>
+</html>
