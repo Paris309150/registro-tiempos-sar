@@ -1,7 +1,3 @@
-Aquí tienes el archivo **README.md** listo para subir a GitHub con la descripción del proyecto. 🚀
-
----
-
 ### 🏥 Registro de Tiempos en SAR
 
 Este proyecto permite registrar y analizar los tiempos de atención en el **Servicio de Atención Primaria de Urgencia de Alta Resolutividad (SAR)**, categorizando a los pacientes según prioridad y edad. La herramienta está diseñada para mejorar la eficiencia en la gestión de tiempos y optimizar los procesos de urgencias.
